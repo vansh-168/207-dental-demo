@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>207 Dental Care – Website assistant demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Brand colours: change these to match the practice exactly */
+:root{
+  --brand:#1C5D99; --brand-dark:#123F6B; --brand-ink:#FFFFFF; --brand-soft:#E8F1FA;
+  --gold:#E3A72F; --gold-ink:#1B1300;
+  --page:#FFFFFF; --page-alt:#F4F8FC; --ink:#1E2A36; --muted:#5B6B7A; --line:#DCE6EF;
+  --bot:#EEF3F8; --warn-bg:#FBECE6; --warn-ink:#8E2F14; --warn-line:#EDC2B2;
+  --shadow:0 10px 30px rgba(18,63,107,.12);
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --brand:#5A9EE0; --brand-dark:#0F2E4D; --brand-ink:#06182A; --brand-soft:#16304A;
+    --gold:#E8B54E; --gold-ink:#1B1300;
+    --page:#0E1822; --page-alt:#132130; --ink:#E3ECF5; --muted:#9DB0C2; --line:#24384C;
+    --bot:#1A2B3C; --warn-bg:#36190F; --warn-ink:#F4A98F; --warn-line:#5A2A1A;
+    --shadow:0 10px 30px rgba(0,0,0,.35); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --brand:#5A9EE0; --brand-dark:#0F2E4D; --brand-ink:#06182A; --brand-soft:#16304A;
+  --gold:#E8B54E; --gold-ink:#1B1300;
+  --page:#0E1822; --page-alt:#132130; --ink:#E3ECF5; --muted:#9DB0C2; --line:#24384C;
+  --bot:#1A2B3C; --warn-bg:#36190F; --warn-ink:#F4A98F; --warn-line:#5A2A1A;
+  --shadow:0 10px 30px rgba(0,0,0,.35); color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(80px + env(safe-area-inset-top,0px));scroll-behavior:smooth}
+body{margin:0;background:var(--page);color:var(--ink);font-family:"Open Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.65}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:40;background:var(--page)}
+h1,h2,h3,h4,.logo-text strong,.navlinks,.btn{font-family:"Poppins","Open Sans",system-ui,sans-serif}
+a{color:var(--brand)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.container{max-width:1160px;margin:0 auto;padding:0 22px}
+.eyebrow{display:inline-block;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);margin-bottom:8px}
+section h2{font-size:clamp(1.6rem,3vw,2.1rem);line-height:1.2;margin:0 0 12px}
+.lead{color:var(--muted);max-width:60ch;margin:0 0 28px}
+
+.ribbon{background:var(--gold);color:var(--gold-ink);font-size:.82rem;text-align:center;padding:6px 12px;font-weight:600}
+.topbar{background:var(--brand-dark);color:#fff;font-size:.84rem}
+.topbar .container{display:flex;gap:18px;justify-content:space-between;align-items:center;padding-top:8px;padding-bottom:8px;flex-wrap:wrap}
+.topbar a{color:#fff;text-decoration:none}
+.topbar .left{display:flex;gap:22px;flex-wrap:wrap}
+.topbar svg{vertical-align:-3px;margin-right:6px}
+
+header.site{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--page);border-bottom:1px solid var(--line);box-shadow:0 2px 12px rgba(18,63,107,.06)}
+header.site .container{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-top:14px;padding-bottom:14px}
+.logo{display:flex;align-items:center;gap:12px;color:var(--ink)}
+.logo-mark{width:48px;height:48px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:700;font-size:1rem;font-family:"Poppins",sans-serif}
+.logo-text{line-height:1.15}.logo-text strong{display:block;font-size:1.25rem;color:var(--brand)}.logo-text span{font-size:.76rem;color:var(--muted);letter-spacing:.04em}
+.navlinks{display:flex;gap:24px;align-items:center;font-size:.92rem;font-weight:500}
+.navlinks a.nl{color:var(--ink);text-decoration:none;padding:6px 0;border-bottom:2px solid transparent}
+.navlinks a.nl:hover,.navlinks a.nl.active{color:var(--brand);border-bottom-color:var(--brand)}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--brand);color:var(--brand-ink);text-decoration:none;font-weight:600;padding:11px 22px;border-radius:4px;border:2px solid var(--brand);cursor:pointer;font-size:.95rem}
+.btn:hover{background:var(--brand-dark);border-color:var(--brand-dark);color:#fff}
+.btn.ghost{background:transparent;color:var(--brand)}
+.btn.ghost:hover{background:var(--brand);color:var(--brand-ink)}
+.btn.light{background:#fff;color:#123F6B;border-color:#fff}
+.menu-btn{display:none;background:none;border:1px solid var(--line);border-radius:4px;padding:8px;color:var(--ink);cursor:pointer}
+
+.hero{background:radial-gradient(900px 400px at 85% 10%,var(--brand-soft),transparent 70%),linear-gradient(180deg,var(--page-alt),var(--page))}
+.hero .container{display:grid;grid-template-columns:1.25fr 1fr;gap:48px;align-items:center;padding-top:72px;padding-bottom:72px}
+.hero h1{font-size:clamp(2.1rem,4.6vw,3.2rem);line-height:1.12;margin:0 0 16px;color:var(--ink)}
+.hero h1 em{font-style:normal;color:var(--brand)}
+.hero p.sub{font-size:1.15rem;color:var(--muted);margin:0 0 26px;max-width:44ch}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px}
+.trust{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;font-size:.93rem}
+.trust li{display:flex;gap:8px;align-items:flex-start}
+.trust svg{flex:none;color:var(--brand);margin-top:3px}
+.hcard{background:var(--page);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);overflow:hidden}
+.hcard .top{background:var(--brand);color:#fff;padding:20px 24px}
+.hcard .top h3{margin:0;font-size:1.1rem}
+.hcard .top .price{font-family:"Poppins",sans-serif;font-size:2.6rem;font-weight:700;line-height:1.1;margin-top:6px}
+.hcard .top p{margin:4px 0 0;font-size:.9rem;opacity:.9}
+.hcard .body{padding:20px 24px}
+.hours{width:100%;border-collapse:collapse;font-size:.92rem;margin-bottom:16px}
+.hours td{padding:6px 0;border-bottom:1px dashed var(--line)}
+.hours td:last-child{text-align:right;color:var(--muted)}
+.hcard .btn{width:100%;justify-content:center}
+
+.offer{background:var(--brand-dark);color:#fff}
+.offer .container{padding-top:22px;padding-bottom:22px;display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.offer .tag{background:var(--gold);color:var(--gold-ink);font-weight:700;font-size:.75rem;padding:4px 10px;border-radius:999px;letter-spacing:.06em;text-transform:uppercase;margin-right:12px}
+.offer strong{font-family:"Poppins",sans-serif;font-size:1.15rem}
+.offer p{margin:4px 0 0;opacity:.9;font-size:.95rem}
+
+.treatments .container{padding-top:72px;padding-bottom:72px}
+.tgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.tcard{background:var(--page);border:1px solid var(--line);border-radius:10px;padding:22px;display:flex;flex-direction:column;gap:8px}
+.tcard:hover{box-shadow:var(--shadow);border-color:transparent}
+.tcard .ic{width:52px;height:52px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;margin-bottom:6px}
+.tcard h3{margin:0;font-size:1.02rem}
+.tcard p{margin:0;color:var(--muted);font-size:.9rem;flex:1}
+.tcard a{font-weight:600;font-size:.9rem;text-decoration:none}
+
+.split{background:var(--page-alt)}
+.split .container{padding-top:72px;padding-bottom:72px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.ptable{width:100%;border-collapse:collapse;background:var(--page);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:.95rem}
+.ptable td{padding:12px 16px;border-bottom:1px solid var(--line)}
+.ptable tr:last-child td{border-bottom:0}
+.ptable td:last-child{text-align:right;font-weight:700;color:var(--brand);white-space:nowrap}
+.small-link{display:inline-block;margin-top:14px;font-weight:600;font-size:.92rem}
+.plan{background:var(--page);border:1px solid var(--line);border-radius:10px;padding:26px}
+.plan h3{margin:0 0 8px;font-size:1.2rem}
+.checks{list-style:none;padding:0;margin:14px 0 18px;display:grid;gap:8px;font-size:.93rem}
+.checks li{display:flex;gap:8px}.checks svg{flex:none;color:var(--brand);margin-top:3px}
+.plan .note{font-size:.85rem;color:var(--muted);margin:0 0 18px}
+
+.welcome .container{padding-top:72px;padding-bottom:72px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.stat{border:1px solid var(--line);border-radius:10px;padding:20px;text-align:center}
+.stat strong{display:block;font-family:"Poppins",sans-serif;font-size:1.8rem;color:var(--brand);line-height:1.1}
+.stat span{font-size:.85rem;color:var(--muted)}
+
+.visit{background:var(--page-alt)}
+.visit .container{padding-top:72px;padding-bottom:72px;display:grid;grid-template-columns:1fr 1.2fr;gap:40px;align-items:stretch}
+.vinfo p{margin:0 0 14px}
+.vinfo strong{display:block;font-family:"Poppins",sans-serif}
+.map{border-radius:10px;border:1px solid var(--line);overflow:hidden;min-height:300px;background:var(--page)}
+.map svg{display:block;width:100%;height:100%}
+
+footer{background:var(--brand-dark);color:#fff}
+footer .container{padding-top:48px;padding-bottom:32px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:28px}
+footer h4{margin:0 0 10px;font-size:1rem}
+footer p,footer li{margin:0;opacity:.88;font-size:.92rem}
+footer ul{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+footer a{color:#fff;text-decoration:none}
+.legal{border-top:1px solid rgba(255,255,255,.15);text-align:center;font-size:.8rem;opacity:.8;padding:16px 20px 100px}
+
+@media (max-width:980px){
+  .navlinks a.nl{display:none} .menu-btn{display:inline-flex}
+  .hero .container,.split .container,.welcome .container,.visit .container{grid-template-columns:1fr}
+  .tgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  footer .container{grid-template-columns:1fr 1fr}
+}
+@media (max-width:560px){
+  .tgrid,.trust,footer .container{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr 1fr}
+  .navlinks .btn{padding:9px 14px;font-size:.88rem}
+  .logo-text span{display:none}
+  .hero .container{padding-top:44px;padding-bottom:44px}
+}
+
+/* ---------- chat widget ---------- */
+.dock{position:fixed;right:0;bottom:0;z-index:50;padding:0 20px calc(20px + env(safe-area-inset-bottom,0px)) 20px;display:flex;flex-direction:column;align-items:flex-end;gap:12px;pointer-events:none}
+.dock>*{pointer-events:auto}
+.launcher{width:62px;height:62px;border-radius:50%;border:0;cursor:pointer;background:var(--brand);color:#fff;display:grid;place-items:center;box-shadow:0 6px 20px rgba(18,63,107,.35)}
+.launcher:hover{background:var(--brand-dark)}
+.launcher .x{display:none}
+.launcher[aria-expanded="true"] .x{display:block}.launcher[aria-expanded="true"] .bubble{display:none}
+.teaser{background:var(--page);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px 14px;max-width:240px;box-shadow:0 6px 20px rgba(0,0,0,.12);font-size:.92rem}
+.teaser button{all:unset;cursor:pointer;color:var(--brand);font-weight:600}
+.panel{display:none;width:380px;height:min(600px,calc(100vh - 120px));background:var(--page);border:1px solid var(--line);border-radius:14px;overflow:hidden;flex-direction:column;box-shadow:0 12px 40px rgba(18,40,64,.25)}
+.panel.open{display:flex}
+.phead{background:var(--brand);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.phead .logo-mark{width:38px;height:38px;background:#fff;color:#1C5D99;font-size:.85rem}
+.phead strong{display:block;font-family:"Poppins",sans-serif;font-size:.98rem}
+.phead span{font-size:.8rem;opacity:.92}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#5BE39A;margin-right:6px;vertical-align:1px}
+.phead .close{margin-left:auto;background:transparent;border:0;color:#fff;cursor:pointer;padding:6px;border-radius:6px;display:grid;place-items:center}
+.phead .close:hover{background:rgba(255,255,255,.15)}
+.log{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--page)}
+.msg{max-width:88%;padding:9px 13px;border-radius:14px;font-size:.94rem;word-wrap:break-word}
+.msg p{margin:0 0 6px}.msg p:last-child{margin:0}
+.msg ul{margin:4px 0 6px;padding-left:18px}
+.bot{background:var(--bot);color:var(--ink);align-self:flex-start;border-bottom-left-radius:4px}
+.user{background:var(--brand);color:var(--brand-ink);align-self:flex-end;border-bottom-right-radius:4px}
+.urgent{background:var(--warn-bg);color:var(--warn-ink);border:1px solid var(--warn-line)}
+.urgent a{color:var(--warn-ink);font-weight:600}
+.typing{color:var(--muted);font-style:italic}
+.small{font-size:.82rem;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-self:flex-start}
+.chip{font:inherit;font-size:.85rem;cursor:pointer;padding:5px 11px;border-radius:999px;background:var(--page);color:var(--brand);border:1px solid var(--brand)}
+.chip:hover{background:var(--brand-soft)}
+.btnlink{display:inline-block;margin-top:6px;padding:6px 14px;border-radius:4px;background:var(--brand);color:var(--brand-ink);text-decoration:none;font-weight:600;font-size:.88rem}
+.form{display:grid;gap:6px;margin-top:6px}
+.form label{font-size:.82rem;color:var(--muted)}
+.form input,.form select{font:inherit;font-size:.92rem;padding:7px 9px;border-radius:6px;border:1px solid var(--line);background:var(--page);color:var(--ink);width:100%}
+.form button{font:inherit;font-weight:600;cursor:pointer;padding:7px 14px;border-radius:4px;border:0;background:var(--brand);color:var(--brand-ink);justify-self:start}
+.err{color:var(--warn-ink);font-size:.82rem}
+.composer{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line);background:var(--page)}
+.composer input{flex:1;min-width:0;font:inherit;font-size:.94rem;padding:10px 12px;border-radius:6px;border:1px solid var(--line);background:var(--page-alt);color:var(--ink)}
+.composer button{font:inherit;font-weight:600;cursor:pointer;padding:0 16px;border-radius:6px;border:0;background:var(--brand);color:var(--brand-ink)}
+.composer button:disabled{opacity:.5;cursor:default}
+.pfoot{padding:0 12px 8px;font-size:.72rem;color:var(--muted);text-align:center;background:var(--page)}
+.sr{position:absolute;left:-9999px}
+@media (max-width:600px){
+  .dock{padding:0 14px calc(14px + env(safe-area-inset-bottom,0px)) 14px}
+  .panel.open{position:fixed;inset:0;width:auto;height:auto;border-radius:0;border:0;z-index:60;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  .panel.open ~ .launcher,.panel.open ~ .teaser{display:none}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="ribbon">Demo: how a 24/7 assistant could look on the 207 Dental Care website. Not affiliated with the practice.</div>
+
+<div class="topbar"><div class="container">
+  <div class="left">
+    <a href="tel:01618340606"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>0161 834 0606</a>
+    <a href="mailto:info@207dentalcare.com"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>info@207dentalcare.com</a>
+  </div>
+  <div><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Mon–Fri: 9am–1pm &amp; 2pm–5pm</div>
+</div></div>
+
+<header class="site"><div class="container">
+  <a class="logo" href="#home" aria-label="207 Dental Care, home" style="text-decoration:none">
+    <div class="logo-mark" aria-hidden="true">207</div>
+    <div class="logo-text"><strong>207 Dental Care</strong><span>PRIVATE DENTIST · MANCHESTER</span></div>
+  </a>
+  <nav class="navlinks" aria-label="Main menu">
+    <a class="nl active" href="#home">Home</a>
+    <a class="nl" href="#treatments">Treatments</a>
+    <a class="nl" href="#prices">Price Guide</a>
+    <a class="nl" href="#plan">Dental Plan</a>
+    <a class="nl" href="#visit">Contact Us</a>
+    <a class="btn" href="https://uk.dentalhub.online/soe/new/207%20Dental%20Care?pid=UKTOS02" target="_blank" rel="noopener">Book Now!</a>
+  </nav>
+</div></header>
+
+<section class="hero" id="home"><div class="container">
+  <div>
+    <span class="eyebrow">Deansgate, Manchester</span>
+    <h1>Affordable dentistry in the <em>heart of Manchester</em></h1>
+    <p class="sub">Caring for all your family’s dental needs with the best price. New private patients welcome.</p>
+    <div class="cta">
+      <a class="btn" href="https://uk.dentalhub.online/soe/new/207%20Dental%20Care?pid=UKTOS02" target="_blank" rel="noopener">Book an appointment</a>
+      <a class="btn ghost" href="tel:01618340606">Call 0161 834 0606</a>
+    </div>
+    <ul class="trust">
+      <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5 9-10"/></svg>Established for over 60 years</li>
+      <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5 9-10"/></svg>Taking new private patients</li>
+      <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5 9-10"/></svg>Denplan membership available</li>
+      <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5 9-10"/></svg>Emergency assessments from £49</li>
+    </ul>
+  </div>
+  <aside class="hcard" aria-label="New patient examination">
+    <div class="top"><h3>New patient examination</h3><div class="price">£110</div><p>Including the bitewing X-rays every new patient needs</p></div>
+    <div class="body">
+      <table class="hours"><tbody>
+        <tr><td>Monday – Friday</td><td>9am – 1pm, 2pm – 5pm</td></tr>
+        <tr><td>Saturday</td><td>Closed</td></tr>
+        <tr><td>Sunday</td><td>Closed</td></tr>
+      </tbody></table>
+      <a class="btn" href="https://uk.dentalhub.online/soe/new/207%20Dental%20Care?pid=UKTOS02" target="_blank" rel="noopener">Book online</a>
+    </div>
+  </aside>
+</div></section>
+
+<section class="offer"><div class="container">
+  <div><strong><span class="tag">Special offer</span>Invisalign for just £3,900</strong><p>Includes a free consultation, free teeth whitening and a free set of retainers.</p></div>
+  <a class="btn light" href="#" data-ask="What’s your Invisalign offer?">Ask about the offer</a>
+</div></section>
+
+<section class="treatments" id="treatments"><div class="container">
+  <span class="eyebrow">Our treatments</span>
+  <h2>Complete care for the whole family</h2>
+  <p class="lead">From routine check-ups to Invisalign and implants, our team looks after every part of your smile.</p>
+  <div class="tgrid"><article class="tcard"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3.5c-2.2 0-3.5 2-3.5 4.2 0 3.2 1.6 5.3 2.1 8.4.4 2.6 1 4.4 2.1 4.4s1.6-2.1 2.1-4.2c.3-1.1.7-1.6 2.2-1.6s1.9.5 2.2 1.6c.5 2.1 1 4.2 2.1 4.2s1.7-1.8 2.1-4.4c.5-3.1 2.1-5.2 2.1-8.4 0-2.2-1.3-4.2-3.5-4.2-1.9 0-3 1-5 1s-3.1-1-5-1z"/></svg></div><h3>General Dentistry</h3><p>Check-ups, hygiene and fillings to keep your smile healthy.</p><a href="#" data-ask="How much is a check-up?">Ask about this <span aria-hidden="true">→</span></a></article><article class="tcard"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 15.4l-4.8 2.5.9-5.4-3.9-3.8 5.4-.8z"/></svg></div><h3>Cosmetic Dentistry</h3><p>Whitening, veneers and tooth reshaping for a confident smile.</p><a href="#" data-ask="How much is teeth whitening?">Ask about this <span aria-hidden="true">→</span></a></article><article class="tcard"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5c3-2.2 13-2.2 16 0M5 14.5c3 2.2 11 2.2 14 0"/><path d="M8.5 9v6M12 8.5v7M15.5 9v6"/></svg></div><h3>Invisalign</h3><p>Straighten your teeth discreetly with clear aligners.</p><a href="#" data-ask="What’s your Invisalign offer?">Ask about this <span aria-hidden="true">→</span></a></article><article class="tcard"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8l-1 5.5H9z"/><path d="M10 8.5V12h4V8.5M10.5 12l.5 3h2l.5-3M11 15l.5 6h1l.5-6"/></svg></div><h3>Dental Implants</h3><p>A long-lasting way to replace missing teeth.</p><a href="#" data-ask="Do you do dental implants?">Ask about this <span aria-hidden="true">→</span></a></article><article class="tcard"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8l4 3 4-6 4 6 4-3-2 10H6z"/></svg></div><h3>Crowns & Bridges</h3><p>Natural-looking restorations for damaged or missing teeth.</p><a href="#" data-ask="How much is a crown?">Ask about this <span aria-hidden="true">→</span></a></article><article class="tcard"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/><path d="M12 7v5l3 2"/></svg></div><h3>Oral Surgery & TMJ</h3><p>Monthly clinic for extractions, wisdom teeth and jaw problems.</p><a href="#" data-ask="How much is a wisdom tooth extraction?">Ask about this <span aria-hidden="true">→</span></a></article><article class="tcard"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/></svg></div><h3>Children’s Dentistry</h3><p>Gentle care that helps children feel at ease.</p><a href="#" data-ask="Do you see children?">Ask about this <span aria-hidden="true">→</span></a></article><article class="tcard"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></div><h3>Nervous Patients</h3><p>We take things at your pace and explain every step.</p><a href="#" data-ask="I’m a nervous patient">Ask about this <span aria-hidden="true">→</span></a></article></div>
+</div></section>
+
+<section class="split" id="prices"><div class="container">
+  <div>
+    <span class="eyebrow">Price guide</span>
+    <h2>Clear, affordable private prices</h2>
+    <p class="lead">A few of our most popular treatments. Your dentist will confirm the exact cost after your examination.</p>
+    <table class="ptable"><tbody><tr><td>New patient examination (with X-rays)</td><td>£110</td></tr><tr><td>Routine examination</td><td>£50</td></tr><tr><td>Emergency assessment</td><td>£49</td></tr><tr><td>Hygienist scale &amp; polish</td><td>£84.50</td></tr><tr><td>White filling</td><td>from £105</td></tr><tr><td>Root canal (front tooth)</td><td>£405</td></tr><tr><td>Teeth whitening</td><td>£320</td></tr><tr><td>Porcelain veneer</td><td>from £780</td></tr></tbody></table>
+    <a class="small-link" href="https://www.207dentalcare.com/207-dental-care-price-guide/" target="_blank" rel="noopener">View the full price guide →</a>
+  </div>
+  <div class="plan" id="plan">
+    <span class="eyebrow">Dental plan</span>
+    <h3>Spread the cost with Denplan</h3>
+    <p style="margin:0;color:var(--muted)">A monthly membership that keeps your teeth healthy and your costs predictable.</p>
+    <ul class="checks">
+      <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5 9-10"/></svg>Routine examinations and hygiene visits</li>
+      <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5 9-10"/></svg>X-rays, fillings, root canals and extractions</li>
+      <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5 9-10"/></svg>Crowns and veneers at lab fee only</li>
+      <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5 9-10"/></svg>10% off teeth whitening</li>
+      <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5 9-10"/></svg>Accident and emergency insurance</li>
+    </ul>
+    <p class="note">Orthodontics, implants and specialist referrals are not covered.</p>
+    <a class="btn ghost" href="#" data-ask="Tell me about your Denplan plans">Ask about Denplan</a>
+  </div>
+</div></section>
+
+<section class="welcome"><div class="container">
+  <div>
+    <span class="eyebrow">Welcome</span>
+    <h2>A Manchester practice that treats you like family</h2>
+    <p>If you are new to the area or just looking to change your dentist, we would be delighted to see you. Our friendly team looks after nervous patients, children and busy professionals alike.</p>
+    <p>We also run a monthly oral surgery clinic for extractions, wisdom teeth and jaw (TMJ) problems.</p>
+    <a class="btn ghost" href="#" data-ask="I’m a nervous patient">Nervous? Talk to us</a>
+  </div>
+  <div class="stats">
+    <div class="stat"><strong>60+</strong><span>years in Manchester</span></div>
+    <div class="stat"><strong>£49</strong><span>emergency assessment</span></div>
+    <div class="stat"><strong>£3.9k</strong><span>Invisalign offer</span></div>
+  </div>
+</div></section>
+
+<section class="visit" id="visit"><div class="container">
+  <div class="vinfo">
+    <span class="eyebrow">Visit us</span>
+    <h2>Find us on Deansgate</h2>
+    <p><strong>Address</strong>207 Deansgate, Manchester M3 3NW</p>
+    <p><strong>Phone</strong><a href="tel:01618340606">0161 834 0606</a></p>
+    <p><strong>Email</strong><a href="mailto:info@207dentalcare.com">info@207dentalcare.com</a></p>
+    <p><strong>Opening hours</strong>Monday – Friday: 9am – 1pm and 2pm – 5pm<br>Saturday and Sunday: Closed</p>
+    <a class="btn" href="https://uk.dentalhub.online/soe/new/207%20Dental%20Care?pid=UKTOS02" target="_blank" rel="noopener">Book Now!</a>
+  </div>
+  <div class="map" aria-label="Illustrated map of the Deansgate area">
+    <svg viewBox="0 0 600 360" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Map illustration showing 207 Deansgate">
+      <rect width="600" height="360" fill="var(--page-alt)"/>
+      <g fill="var(--line)">
+        <rect x="20" y="20" width="150" height="90" rx="6"/><rect x="20" y="140" width="150" height="80" rx="6"/><rect x="20" y="250" width="150" height="90" rx="6"/>
+        <rect x="290" y="20" width="120" height="70" rx="6"/><rect x="290" y="120" width="120" height="110" rx="6"/><rect x="290" y="260" width="120" height="80" rx="6"/>
+        <rect x="440" y="20" width="140" height="150" rx="6"/><rect x="440" y="200" width="140" height="140" rx="6"/>
+      </g>
+      <path d="M230 0 L250 360" stroke="var(--page)" stroke-width="34"/>
+      <path d="M0 125 L600 108" stroke="var(--page)" stroke-width="18"/>
+      <path d="M0 238 L600 248" stroke="var(--page)" stroke-width="18"/>
+      <path d="M425 0 L425 360" stroke="var(--page)" stroke-width="14"/>
+      <text x="252" y="330" transform="rotate(-87 252 330)" font-family="Open Sans, sans-serif" font-size="14" font-weight="600" fill="var(--muted)" letter-spacing="3">DEANSGATE</text>
+      <g transform="translate(244 170)">
+        <circle r="26" fill="var(--brand)" opacity=".18"/>
+        <path d="M0 -34 C-14 -34 -22 -24 -22 -13 C-22 2 0 18 0 18 C0 18 22 2 22 -13 C22 -24 14 -34 0 -34Z" fill="var(--brand)"/>
+        <circle cy="-13" r="7" fill="#fff"/>
+      </g>
+      <rect x="276" y="150" width="132" height="34" rx="6" fill="var(--page)" stroke="var(--line)"/>
+      <text x="288" y="172" font-family="Poppins, sans-serif" font-size="13" font-weight="600" fill="var(--ink)">207 Dental Care</text>
+    </svg>
+  </div>
+</div></section>
+
+<footer>
+  <div class="container">
+    <div><h4>207 Dental Care</h4><p>Affordable private dentistry in the heart of Manchester, caring for families for over 60 years.</p></div>
+    <div><h4>Treatments</h4><ul><li>General dentistry</li><li>Cosmetic dentistry</li><li>Invisalign</li><li>Dental implants</li></ul></div>
+    <div><h4>Patients</h4><ul><li><a href="#prices">Price guide</a></li><li><a href="#plan">Denplan</a></li><li><a href="https://uk.dentalhub.online/soe/new/207%20Dental%20Care?pid=UKTOS02" target="_blank" rel="noopener">Book online</a></li><li><a href="#" data-ask="Is there a deposit to book?">Booking policy</a></li></ul></div>
+    <div><h4>Contact</h4><ul><li>207 Deansgate, Manchester M3 3NW</li><li><a href="tel:01618340606">0161 834 0606</a></li><li><a href="mailto:info@207dentalcare.com">info@207dentalcare.com</a></li></ul></div>
+  </div>
+  <div class="legal">Demo page prepared as a proposal for 207 Dental Care. Content is based on the practice’s public website and may change.</div>
+</footer>
+
+<div class="dock">
+  <section class="panel" id="panel" role="dialog" aria-label="Chat with the 207 Dental Care assistant">
+    <div class="phead">
+      <div class="logo-mark" aria-hidden="true">207</div>
+      <div><strong>207 Dental Care</strong><span><span class="dot" aria-hidden="true"></span>Replies instantly, day or night</span></div>
+      <button class="close" id="closeChat" type="button" aria-label="Close chat"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="log" id="log" role="log" aria-live="polite"></div>
+    <div class="composer" id="composer" role="group" aria-label="Send a message">
+      <label for="q" class="sr">Your question</label>
+      <input id="q" type="text" placeholder="Ask about prices, booking, NHS places…" maxlength="400">
+      <button id="send" type="button">Send</button>
+    </div>
+    <div class="pfoot">Demo assistant. For anything medical, please speak to the practice.</div>
+  </section>
+  <div class="teaser" id="teaser" hidden>Have a question? <button type="button">Chat with us</button></div>
+  <button class="launcher" id="launcher" type="button" aria-expanded="false" aria-controls="panel" aria-label="Open chat">
+    <svg class="bubble" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v11H9l-5 4z"/></svg>
+    <svg class="x" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+</div>
+
+<script>
+
+/* ---------- Practice facts (from 207dentalcare.com and its price guide) ---------- */
+const PHONE = "0161 834 0606", TEL = "tel:01618340606", EMAIL = "info@207dentalcare.com";
+const BOOK = "https://uk.dentalhub.online/soe/new/207%20Dental%20Care?pid=UKTOS02";
+const callLink = `<a href="${TEL}">${PHONE}</a>`;
+const mailLink = `<a href="mailto:${EMAIL}">${EMAIL}</a>`;
+const bookBtn = `<a class="btnlink" href="${BOOK}" target="_blank" rel="noopener">Book online</a>`;
+
+const FACTS = `
+Practice: 207 Dental Care, 207 Deansgate, Manchester M3 3NW. Private practice, established over 60 years.
+Phone ${PHONE}. Email ${EMAIL}. Online booking available on the website.
+Opening hours: Monday to Friday 9am–1pm and 2pm–5pm. Closed weekends.
+New patients: taking new private patients. New patient examination £110 including mandatory bitewing X-rays.
+NHS: limited NHS availability; patients should call to check.
+Deposit: a non-refundable deposit is taken when booking online. If you cancel or miss the appointment within 24 hours, the deposit is kept. With 24+ hours’ notice you can reschedule. Deposit amount not stated.
+Prices (private): routine exam £50; private emergency assessment £49; hygienist scale & polish £84.50; X-rays £20 each; amalgam filling from £99.50; composite filling front from £105, pre-molar from £148, molar from £165; GIC filling from £82; fissure sealant £45; root canal front £405, pre-molar from £625, molar from £690; extraction simple from £140, complex from £201; crowns/veneers from £700; all-ceramic crown from £940; porcelain bonded crown from £780; porcelain veneer from £780; porcelain inlay from £665; crown recement from £88; core build-up £155; bridges and dentures price on application; mouthguard £112; night bite guard £115; Essix retainers £150 per arch; tooth whitening £320 (top-up £30).
+Invisalign offer: £3,900 including free consultation, free teeth whitening and a free set of retainers.
+Oral surgery clinic: Dr Choudhury works one Monday a month, bookable by existing patients or new patients who only want an extraction. Simple extraction £250, complex £500, wisdom tooth £600, coronectomy £600, apicectomy £600, labial frenectomy £500, jaw cyst removal or soft tissue biopsy from £500 (lab fees may apply), masseter Botox from £300.
+Denplan: routine exams, hygiene, X-rays, fillings, root canals and extractions included; crowns/veneers lab fee only; whitening 10% off; accident & emergency insurance included. Not covered by any plan: specialist referrals, orthodontics, implants.
+Treatments offered: general, preventive, children’s treatment, mouth cancer detection, nervous patients, oral surgery and TMJ, cosmetic, whitening, composite fillings, tooth reshaping, bridges, inlays/onlays, crowns, implants, veneers, Invisalign. Implant prices not listed.
+Unknown: parking, step-free access, finance details, appointment length, deposit amount.`;
+
+/* ---------- Built-in answers (work for every visitor) ---------- */
+const P = s => `<p>${s}</p>`;
+const INTENTS = [
+ {id:"hours", keys:["open","opening","hours","close","closing","weekend","saturday","sunday","evening","time","today"],
+  a:()=>P("We’re open <strong>Monday to Friday, 9am–1pm and 2pm–5pm</strong>. We’re closed at weekends.")+P(`Out of hours, you can still <a href="${BOOK}" target="_blank" rel="noopener">book online</a>, or call NHS 111 for urgent advice.`),
+  chips:["How do I book?","I’m in pain"]},
+ {id:"location", keys:["where","address","located","location","directions","deansgate","find you","postcode"],
+  a:()=>P("You’ll find us at <strong>207 Deansgate, Manchester M3 3NW</strong>, in the heart of the city centre.")+P(`For parking or access questions, please call ${callLink}.`),
+  chips:["Opening hours","How do I book?"]},
+ {id:"newpatient", keys:["new patient","register","join","first visit","first appointment","taking patients","accepting","new to"],
+  a:()=>P("Yes, we’re welcoming <strong>new private patients</strong>.")+P("A new patient examination is <strong>£110</strong>, which includes the bitewing X-rays every new patient needs.")+bookBtn,
+  chips:["Do you take NHS patients?","Is there a deposit?"]},
+ {id:"nhs", keys:["nhs","free dental","exempt","nhs patient"],
+  a:()=>P("We have <strong>limited NHS availability</strong>, and places change often.")+P(`Please call ${callLink} to check whether we can register you on the NHS. If not, we can see you as a private patient (new patient exam £110).`),
+  chips:["New patient exam","Prices"]},
+ {id:"book", keys:["book","booking","appointment","schedule","reserve","see a dentist","make an appointment"],
+  a:()=>P(`You can book online at any time, or call ${callLink} during opening hours.`)+bookBtn+P("A non-refundable deposit is taken when you book online."),
+  chips:["Is there a deposit?","Request a call back"]},
+ {id:"deposit", keys:["a deposit","deposit","cancel","cancellation","reschedule","refund","no show","miss"],
+  a:()=>P("A <strong>non-refundable deposit</strong> secures online bookings.")+`<ul><li>Cancel with 24+ hours’ notice: you can reschedule.</li><li>Cancel or miss it within 24 hours: the deposit is kept.</li></ul>`+P(`For the exact deposit amount, please call ${callLink}.`),
+  chips:["How do I book?"]},
+ {id:"prices", keys:["price","prices","cost","costs","how much","fee","fees","charge","expensive","price list"],
+  a:()=>P("Here are some of our most asked-about prices:")+`<ul><li>New patient exam with X-rays: £110</li><li>Routine exam: £50</li><li>Emergency assessment: £49</li><li>Hygienist scale &amp; polish: £84.50</li><li>White fillings: from £105</li><li>Teeth whitening: £320</li></ul>`+P("Ask me about any treatment for its price."),
+  chips:["Root canal cost","Crowns and veneers","Invisalign offer"]},
+ {id:"checkup", keys:["check up","checkup","check-up","routine","exam","examination","hygienist","scale","polish","clean","cleaning","x-ray","xray"],
+  a:()=>`<ul><li>Routine exam: <strong>£50</strong></li><li>Hygienist scale &amp; polish: <strong>£84.50</strong></li><li>X-rays: <strong>£20 each</strong></li><li>New patient exam (with X-rays): <strong>£110</strong></li></ul>`+bookBtn,
+  chips:["Denplan plans","Prices"]},
+ {id:"filling", keys:["filling","fillings","cavity","composite","amalgam","hole"],
+  a:()=>`<ul><li>Amalgam filling: from £99.50</li><li>White filling (front tooth): from £105</li><li>White filling (pre-molar): from £148</li><li>White filling (molar): from £165</li></ul>`+P("Your dentist will confirm the exact price after an examination."),
+  chips:["How do I book?"]},
+ {id:"rootcanal", keys:["root canal","rct","nerve"],
+  a:()=>`<ul><li>Front tooth: £405</li><li>Pre-molar: from £625</li><li>Molar: from £690</li></ul>`+P("Your dentist will confirm the exact price after an examination. Root canals are included for Denplan members."),
+  chips:["Denplan plans","I’m in pain"]},
+ {id:"extraction", keys:["extract","extraction","removal","remove","pull","wisdom","oral surgery","surgery"],
+  a:()=>P("Routine extractions start <strong>from £140</strong> (complex from £201).")+P("We also run an <strong>oral surgery clinic</strong> with Dr Choudhury one Monday a month, for things like wisdom teeth (£600). New patients who only need an extraction can book this clinic too.")+P(`Call ${callLink} to find the right appointment.`),
+  chips:["I’m in pain","Opening hours"]},
+ {id:"whitening", keys:["whiten","whitening","white teeth","bleach","stain"],
+  a:()=>P("Professional <strong>teeth whitening is £320</strong>, with top-ups for £30.")+P("Denplan members get 10% off. Whitening is also included free with our Invisalign offer."),
+  chips:["Invisalign offer","How do I book?"]},
+ {id:"invisalign", keys:["invisalign","aligner","aligners","straighten","straight","braces","crooked","orthodontic"],
+  a:()=>P("Our current <strong>Invisalign offer is £3,900</strong>, and it includes:")+`<ul><li>A free consultation</li><li>Free teeth whitening at the end</li><li>A free set of retainers</li></ul>`+bookBtn,
+  chips:["Finance options","Request a call back"]},
+ {id:"crown", keys:["crown","crowns","veneer","veneers","inlay","onlay","bridge","bridges","cosmetic","smile makeover"],
+  a:()=>`<ul><li>Crowns and veneers: from £700</li><li>All-ceramic crown: from £940</li><li>Porcelain veneer: from £780</li><li>Porcelain inlay: from £665</li><li>Bridges: price on consultation</li></ul>`+P("Your dentist will give you an exact plan and price at your consultation."),
+  chips:["How do I book?"]},
+ {id:"implant", keys:["implant","implants","missing tooth","replace tooth","denture","dentures","false teeth"],
+  a:()=>P("Yes, we offer <strong>dental implants</strong> and dentures.")+P(`Prices depend on each case and are given after a consultation. Call ${callLink} to arrange one. Implants aren’t covered by Denplan plans.`),
+  chips:["Finance options","Request a call back"]},
+ {id:"denplan", keys:["denplan","plan","plans","membership","monthly","insurance"],
+  a:()=>P("With our <strong>Denplan</strong> membership, routine exams, hygiene, X-rays, fillings, root canals and extractions are included, plus accident and emergency cover.")+P("Crowns and veneers are lab fee only, and whitening is 10% off. Orthodontics, implants and specialist referrals aren’t covered.")+P(`Call ${callLink} to find the right plan.`),
+  chips:["Prices","Request a call back"]},
+ {id:"finance", keys:["finance","pay monthly","instalment","installment","payment plan","afford","card","pay"],
+  a:()=>P(`We offer monthly membership plans through Denplan. For finance on larger treatments or payment methods, please call ${callLink} or email ${mailLink}.`),
+  chips:["Denplan plans","Request a call back"]},
+ {id:"children", keys:["child","children","kid","kids","son","daughter","baby","family"],
+  a:()=>P("Yes, we treat children and the whole family, with gentle care and prevention advice.")+P(`Call ${callLink} to book your child in.`),
+  chips:["Nervous patients","How do I book?"]},
+ {id:"nervous", keys:["nervous","anxious","scared","afraid","fear","phobia","worried"],
+  a:()=>P("You’re not alone, and we’re used to looking after nervous patients. Our team takes things at your pace and explains each step.")+P(`If you’d like to talk it through first, call ${callLink} or request a call back.`),
+  chips:["Request a call back"]},
+ {id:"guards", keys:["mouthguard","mouth guard","night guard","grind","grinding","bruxism","clench","retainer","tmj","jaw"],
+  a:()=>`<ul><li>Sports mouthguard: £112</li><li>Night bite guard (for grinding): £115</li><li>Essix retainers: £150 per arch</li><li>Masseter Botox for clenching: from £300</li></ul>`+P(`For jaw (TMJ) problems, we run a monthly clinic. Call ${callLink} for details.`),
+  chips:["How do I book?"]},
+ {id:"contact", keys:["phone","call","number","email","contact","speak","human","person","receptionist","talk"],
+  a:()=>P(`You can reach the team on ${callLink} (Mon–Fri, 9am–1pm and 2pm–5pm) or email ${mailLink}.`)+P("Or leave your details and the team will call you back."),
+  chips:["Request a call back"]},
+ {id:"parking", keys:["parking","park","car","wheelchair","access","accessible","lift","stairs","disabled","tram","train","bus"],
+  a:()=>P(`I don’t have parking or access details, sorry. Please call ${callLink} and the team will help you plan your visit.`),
+  chips:["Where are you?"]},
+ {id:"hello", keys:["hi","hello","hey","good morning","good afternoon","thanks","thank you"],
+  a:()=>P("Hello! I can help with prices, booking, new patient registration, NHS places, and what to do if you’re in pain. What would you like to know?"),
+  chips:["New patient exam","I’m in pain","Prices"]}
+];
+
+const SEVERE = ["can't breathe","cant breathe","can’t breathe","breathing","swallow","eye swelling","swelling spreading","spreading","knocked out","unconscious","heavy bleeding","won't stop bleeding","wont stop bleeding"];
+const PAIN = ["pain","painful","ache","aching","toothache","hurts","hurting","swelling","swollen","broken","broke","chipped","cracked","bleeding","abscess","emergency","urgent","lost a filling","lost my filling","crown fell"];
+
+function norm(t){return " "+t.toLowerCase().replace(/[’']/g,"'").replace(/[^a-z0-9£' ]+/g," ").replace(/\s+/g," ")+" "}
+function has(text,k){return text.includes(" "+k+" ")||(k.includes(" ")&&text.includes(k))}
+
+function ruleAnswer(q){
+  const t = norm(q);
+  if (SEVERE.some(k=>t.includes(k))) return {urgent:true,
+    html:P("<strong>If swelling is affecting your breathing or swallowing, or bleeding won’t stop, call 999 or go to A&amp;E now.</strong>")+P(`For other urgent problems, call NHS 111, or ${callLink} during opening hours.`),
+    chips:[]};
+  if (PAIN.some(k=>has(t,k))) return {urgent:true,
+    html:P("I’m sorry you’re in pain. We offer a <strong>private emergency assessment for £49</strong>.")+P(`Please call ${callLink} (Mon–Fri, 9am–1pm and 2pm–5pm) so the team can see you as soon as possible.`)+P("Out of hours, call <strong>NHS 111</strong>. If swelling affects your breathing or swallowing, call 999."),
+    chips:["Opening hours","Request a call back"]};
+  let best=null, score=0;
+  for (const it of INTENTS){
+    let s=0; for (const k of it.keys) if (has(t,k)) s += k.split(" ").length + 1;
+    if (it.id==="prices") s = s/2;
+    if (s>score){score=s;best=it}
+  }
+  if (best) return {html:best.a(), chips:best.chips};
+  return {html:P("I’m not sure about that one, sorry.")+P(`The team will be happy to help: call ${callLink} or email ${mailLink}.`), chips:["Prices","Request a call back","How do I book?"]};
+}
+
+
+/* ---------- Chat widget UI ---------- */
+const log = document.getElementById("log"), form = document.getElementById("composer"),
+      input = document.getElementById("q"), sendBtn = document.getElementById("send"),
+      panel = document.getElementById("panel"), launcher = document.getElementById("launcher"),
+      closeBtn = document.getElementById("closeChat"), teaser = document.getElementById("teaser");
+const convo = [];
+let sample = null, aiOff = false, busy = false, started = false;
+
+function openChat(){panel.classList.add("open");launcher.setAttribute("aria-expanded","true");teaser.hidden=true;
+  if(!started){started=true;greet()} setTimeout(()=>input.focus({preventScroll:true}),50)}
+function closeChat(){panel.classList.remove("open");launcher.setAttribute("aria-expanded","false");launcher.focus()}
+launcher.onclick=()=>panel.classList.contains("open")?closeChat():openChat();
+closeBtn.onclick=closeChat;
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&panel.classList.contains("open"))closeChat()});
+document.querySelectorAll("[data-open-chat]").forEach(b=>b.addEventListener("click",e=>{e.preventDefault();openChat()}));
+teaser.querySelector("button").onclick=openChat;
+
+function scrollDown(){log.scrollTop = log.scrollHeight}
+function addMsg(cls, html){const d=document.createElement("div");d.className="msg "+cls;d.innerHTML=html;log.appendChild(d);scrollDown();return d}
+function addChips(list){
+  if(!list||!list.length) return;
+  const w=document.createElement("div");w.className="chips";
+  list.forEach(c=>{const b=document.createElement("button");b.type="button";b.className="chip";b.textContent=c;
+    b.onclick=()=>{w.remove(); if(c==="Request a call back"){addMsg("user",esc(c));callbackForm()} else ask(c)}; w.appendChild(b)});
+  log.appendChild(w);scrollDown();
+}
+function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function linkify(s){
+  return esc(s).replace(/0161 ?834 ?0606/g,callLink).replace(/info@207dentalcare\.com/g,mailLink)
+    .split(/\n{2,}/).map(p=>"<p>"+p.replace(/\n/g,"<br>")+"</p>").join("");
+}
+function clearChips(){log.querySelectorAll(".chips").forEach(c=>c.remove())}
+
+async function ask(text){
+  if(busy) return;
+  text = text.trim(); if(!text) return;
+  clearChips();
+  addMsg("user", esc(text));
+  if (/call ?back/i.test(text)) { convo.push({role:"user",content:text}); callbackForm(); return; }
+  busy=true; sendBtn.disabled=true;
+  const rule = ruleAnswer(text);
+  let done=false;
+  if (sample && !aiOff){
+    const bubble = addMsg("bot"+(rule.urgent?" urgent":""), '<span class="typing">Typing…</span>');
+    try{
+      const recent = convo.slice(-6).map(m=>(m.role==="user"?"Patient: ":"Assistant: ")+m.content).join("\n");
+      const prompt = `You are the friendly website assistant for 207 Dental Care, a private dental practice in Manchester, UK.
+Answer the patient's latest message using ONLY the facts below. Write in British English, warm and plain, 1–4 short sentences, plain text only (no markdown, no bullet symbols).
+Rules:
+- If a fact is not listed, say you're not sure and suggest calling ${PHONE} or emailing ${EMAIL}. Never invent prices, times, staff or policies.
+- Never diagnose or give medical advice. If the patient mentions pain, swelling, bleeding or a broken tooth: mention the £49 private emergency assessment and calling ${PHONE} during opening hours; out of hours, NHS 111; if swelling affects breathing or swallowing, or bleeding won't stop, call 999.
+- For NHS questions: there is limited NHS availability, so they should call to check.
+- For prices that start "from", say the dentist confirms the exact price after an examination.
+- When booking is relevant, say they can book online at any time or call.
+
+FACTS:${FACTS}
+
+Conversation so far:
+${recent || "(none)"}
+Patient: ${text}
+Assistant:`;
+      let first=false;
+      const ai = sample(prompt,{modelTier:"quick",cache:false,onText:({text:t})=>{first=true;bubble.innerHTML=linkify(t);scrollDown()}});
+      const out = await new Promise((res,rej)=>{
+        const timer=setTimeout(()=>{ if(!first) rej({code:"timeout"}) },8000);
+        ai.then(r=>{clearTimeout(timer);res(r.text)}, e=>{clearTimeout(timer);rej(e)});
+      });
+      bubble.innerHTML = linkify(out);
+      if (/book/i.test(out)) bubble.insertAdjacentHTML("beforeend", bookBtn);
+      convo.push({role:"user",content:text},{role:"assistant",content:out});
+      addChips(rule.chips); done=true;
+    }catch(e){
+      if (e && (e.code==="not_granted"||e.code==="timeout")) aiOff=true;
+      bubble.remove();
+    }
+  }
+  if(!done){
+    const d = addMsg("bot"+(rule.urgent?" urgent":""), '<span class="typing">Typing…</span>');
+    await new Promise(r=>setTimeout(r,450));
+    d.innerHTML = rule.html;
+    convo.push({role:"user",content:text},{role:"assistant",content:d.textContent});
+    addChips(rule.chips);
+  }
+  scrollDown(); busy=false; sendBtn.disabled=false;
+}
+
+function callbackForm(){
+  const d = addMsg("bot", P("Happy to arrange that. Leave your details and the team will call you back during opening hours.")+
+   `<div class="form" role="group" aria-label="Call back request">
+      <label for="cbName">Your name</label><input id="cbName" autocomplete="name">
+      <label for="cbPhone">Phone number</label><input id="cbPhone" type="tel" autocomplete="tel">
+      <label for="cbReason">What’s it about?</label>
+      <select id="cbReason"><option>Booking an appointment</option><option>New patient</option><option>Pain or emergency</option><option>Invisalign or cosmetic</option><option>Something else</option></select>
+      <span class="err" id="cbErr" role="alert"></span>
+      <button type="button" id="cbSend">Request call back</button>
+    </div>`);
+  d.querySelector("#cbSend").onclick=()=>{
+    const n=d.querySelector("#cbName").value.trim(), p=d.querySelector("#cbPhone").value.trim(), r=d.querySelector("#cbReason").value;
+    const err=d.querySelector("#cbErr");
+    if(!n){err.textContent="Please add your name.";return}
+    if(p.replace(/\D/g,"").length<10){err.textContent="Please add a phone number with at least 10 digits.";return}
+    d.innerHTML = P(`Thanks, ${esc(n)}. Your call back request (${esc(r).toLowerCase()}) has been noted.`)+
+      `<p class="small">Demo only: no details were sent or saved. In the live version, the practice would receive this straight away by email.</p>`;
+    addChips(["Opening hours","Prices"]);
+  };
+}
+
+function sendTyped(){ if(busy) return; const v=input.value; if(!v.trim()) { input.focus(); return; } input.value=""; ask(v); }
+sendBtn.addEventListener("click", sendTyped);
+input.addEventListener("keydown", e=>{ if(e.key==="Enter" && !e.isComposing){ e.preventDefault(); sendTyped(); } });
+
+function greet(){
+  addMsg("bot", P("Hi! I’m the 207 Dental Care assistant.")+P("I can help with prices, booking, new patient registration, NHS places, and what to do if you’re in pain. What can I help with?"));
+  addChips(["New patient exam","I’m in pain","Opening hours","Prices","Invisalign offer","Request a call back"]);
+}
+
+if (window.matchMedia("(min-width: 900px)").matches) { setTimeout(()=>{ if(!started) openChat() }, 1800); }
+else { setTimeout(()=>{ if(!started) teaser.hidden=false }, 1200); }
+
+(async()=>{try{ if(window.claude && window.claude.use){ sample = await window.claude.use("sample"); } }catch(e){ sample=null }})();
+
+
+document.querySelectorAll("[data-ask]").forEach(el=>el.addEventListener("click",e=>{
+  e.preventDefault(); openChat(); const q=el.getAttribute("data-ask"); setTimeout(()=>ask(q),120);
+}));
+</script>
+</body>
+</html>
